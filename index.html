@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="ky">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NEXORA</title>
+<style>
+:root{--bg:#070b18;--panel:#101a32;--panel2:#0c1428;--line:#263d69;--blue:#2995ff;--purple:#963cff;--pink:#e13cae;--muted:#9aabc9}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:#f6f8ff;font-family:Arial,sans-serif}
+header{height:64px;background:#0e1730;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 17px;position:sticky;top:0;z-index:5}
+.logo{font-size:24px;font-weight:800;letter-spacing:1px}.logo span{color:#53aaff}
+button{border:0;border-radius:10px;padding:12px 15px;color:white;font-weight:700;background:linear-gradient(100deg,var(--blue),var(--purple),var(--pink));cursor:pointer}
+button.secondary{background:#1a2a4d;border:1px solid #304875}
+input{width:100%;padding:13px;margin:8px 0;background:#09132a;border:1px solid #31466e;border-radius:9px;color:white}
+.page{max-width:1050px;margin:auto;padding:15px}.card{background:linear-gradient(145deg,#121f3d,#0c1429);border:1px solid var(--line);border-radius:14px;padding:16px;margin:12px 0;box-shadow:0 8px 24px #0003}
+.hidden{display:none!important}.muted{color:var(--muted);font-size:13px}.notice{background:#302817;border:1px solid #72551d;color:#ffdc8d;padding:12px;border-radius:10px;font-size:12px;line-height:1.5;margin:12px 0}
+.balance{font-size:30px;font-weight:800;color:#72baff;margin:9px 0}.split{display:flex;justify-content:space-between;gap:10px;align-items:center}
+nav{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:14px 0}nav button{padding:12px 5px;background:#172747;font-size:12px}
+.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.house{overflow:hidden;background:#101c36;border:1px solid #294574;border-radius:13px}
+.house img{width:100%;height:145px;object-fit:cover;display:block}.houseinfo{padding:12px}.price{font-size:18px;font-weight:800;color:#76baff;margin:8px 0}
+.pill{display:inline-block;font-size:10px;color:#d5b4ff;background:#332052;padding:5px 8px;border-radius:20px;margin-bottom:7px}
+.qr{display:block;width:210px;height:210px;object-fit:contain;background:white;padding:8px;border-radius:12px;margin:16px auto}
+.bottom{display:none;position:sticky;bottom:0;background:#0e1730;border-top:1px solid var(--line);padding:8px;justify-content:space-around;z-index:4}
+.bottom button{font-size:10px;padding:10px 8px;background:#1b2b4b}
+h2{font-size:19px;margin:0 0 13px}h3{font-size:16px}
+footer{text-align:center;padding:25px;color:#667898;font-size:12px}
+@media(max-width:650px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.house img{height:115px}nav{grid-template-columns:repeat(4,1fr)}.page{padding:10px}.bottom{display:flex}}
+@media(min-width:900px){.page{padding:22px}}
+</style>
+</head>
+<body>
+<header><div class="logo"><span>✦</span> NEXORA</div><button class="secondary hidden" id="logoutBtn" onclick="logout()">Чыгуу</button></header>
+<main class="page">
+<section id="auth">
+ <div class="card" style="max-width:430px;margin:35px auto;text-align:center;padding:25px">
+  <div class="logo"><span>✦</span> NEXORA</div><p class="muted">Кош келиңиз</p>
+  <h2 style="margin-top:25px">Аккаунтка кирүү</h2>
+  <input id="loginName" placeholder="Колдонуучу аты">
+  <input id="loginPassword" type="password" placeholder="Сыр сөз">
+  <button style="width:100%" onclick="login()">КИРҮҮ</button>
+  <p class="muted" style="margin-top:17px">Аккаунтуң жокпу? <a href="#" onclick="showRegister()" style="color:#78baff">Катталуу</a></p>
+ </div>
+ <div class="notice">DEMO: бул окуу прототиби. Акча салуу, инвестиция жана төлөм жүргүзүлбөйт.</div>
+</section>
+<section id="register" class="hidden">
+ <div class="card" style="max-width:430px;margin:35px auto">
+  <h2>Катталуу</h2><input id="newName" placeholder="Колдонуучу аты"><input id="newPassword" type="password" placeholder="Сыр сөз">
+  <button style="width:100%" onclick="register()">АККАУНТ ТҮЗҮҮ</button>
+  <p style="margin-top:15px"><a href="#" onclick="showLogin()" style="color:#78baff">Кирүү бетине кайтуу</a></p>
+ </div>
+</section>
+<section id="app" class="hidden">
+ <div class="notice">DEMO ПЛАТФОРМА. 400 сомдук катталуу бонусу жана күнүмдүк 5 сомдук бонус — виртуалдык упайлар гана; аларды чыгарууга же акчага айлантууга болбойт. Карточкалар маалыматтык үлгү.</div>
+ <div class="card">
+  <div class="split"><span class="muted">Жалпы виртуалдык баланс</span><span>◉</span></div>
+  <div class="balance"><span id="totalBalance">400.00</span> сом</div>
+  <div class="split muted"><span>Негизги демо упай</span><b id="mainBalance">0.00 сом</b></div>
+  <div class="split muted" style="margin-top:8px"><span>Бонус (чыгарылбайт)</span><b id="bonusBalance">400.00 сом</b></div>
+ </div>
+ <div class="card">
+  <div class="split"><div><h3>🎁 Күндүк бонус</h3><div class="balance" style="font-size:25px">5.00 сом</div><p class="muted">Виртуалдык упай гана</p></div><button onclick="claimDaily()">Бонус алуу</button></div>
+  <p class="muted" id="dailyStatus" style="margin-top:10px"></p>
+ </div>
+ <nav>
+  <button onclick="showPage('home')">Башкы бет</button><button onclick="showPage('catalog')">Каталог</button><button onclick="showPage('topup')">Толуктоо</button><button onclick="showPage('withdraw')">Чыгаруу</button>
+  <button onclick="showPage('referral')">Реферал</button><button onclick="showPage('telegram')">Telegram</button><button onclick="showPage('profile')">Профиль</button><button onclick="showPage('admin')">Админ</button>
+ </nav>
+ <div id="home" class="section">
+  <div class="card"><h2>Кош келиңиз, <span id="welcomeName"></span>!</h2><p class="muted">NEXORAнын маалыматтык демо платформасы.</p></div>
+  <h2>Каталогдон тандалгандар</h2><div class="grid" id="featured"></div>
+ </div>
+ <div id="catalog" class="section hidden"><h2>Каталог — 9 үйдүн үлгүсү</h2><div class="grid" id="houses"></div></div>
+ <div id="topup" class="section hidden"><div class="card" style="text-align:center"><h2>QR-код бөлүмү</h2><p class="muted">Төлөм эмес, интерфейс үлгүсү</p><img class="qr" src="qr.png" alt="QR үлгүсү" onerror="this.style.display='none'"><div class="notice">Бул прототип QR аркылуу акча кабыл албайт. Сүрөттү кийин өзүңдүн коопсуз тест QR сүрөтүң менен алмаштыр.</div></div></div>
+ <div id="withdraw" class="section hidden"><div class="card"><h2>Чыгаруу бөлүмү</h2><p class="muted">Бул демо версияда акча чыгаруу жок.</p><p style="margin:14px 0">Чыгарылуучу чыныгы баланс: <b>0 сом</b></p><input type="number" placeholder="Сумма" disabled><button disabled style="opacity:.5">Чыгаруу жеткиликсиз</button></div></div>
+ <div id="referral" class="section hidden"><div class="card"><h2>Реферал шилтемеси</h2><p class="muted">Демо чакыруу шилтемеси</p><input id="refLink" readonly><button onclick="copyRef()">Шилтемени көчүрүү</button></div></div>
+ <div id="telegram" class="section hidden"><div class="card"><h2>Telegram</h2><p class="muted">Группа жана канал шилтемелерин кийин кошсоң болот.</p><button onclick="alert('Telegram шилтемеси кошула элек')">Группага өтүү</button> <button class="secondary" onclick="alert('Telegram шилтемеси кошула элек')">Каналга өтүү</button></div></div>
+ <div id="profile" class="section hidden"><div class="card"><h2>Профиль</h2><p>Колдонуучу: <b id="profileName"></b></p><p class="muted" style="margin-top:10px">Аккаунт: DEMO</p></div></div>
+ <div id="admin" class="section hidden"><div class="card"><h2>Админ панели</h2><p class="muted">Бул үлгүдө админ укуктары жана сервердик башкаруу жок.</p></div></div>
+</section>
+</main>
+<div class="bottom" id="bottomNav"><button onclick="showPage('home')">Башкы</button><button onclick="showPage('catalog')">Каталог</button><button onclick="showPage('referral')">Реферал</button><button onclick="showPage('profile')">Профиль</button></div>
+<footer>NEXORA © 2026 · Окуу үчүн демо</footer>
+<script>
+const homes=[
+["BUNGE-1",900,"house1.svg"],["Каско-Бей",1700,"house2.svg"],["Блайт-Маккой",3500,"house3.svg"],
+["Бэбкок-Ранч",7000,"house4.svg"],["Вулф-Ридж",15000,"house5.svg"],["Уитридж",40000,"house6.svg"],
+["Пондероса",70000,"house7.svg"],["Джордон-Крик",150000,"house8.svg"],["Голден-Вест",300000,"house9.svg"]
+];
+let current=localStorage.getItem("nx_user")||"";
+function accounts(){return JSON.parse(localStorage.getItem("nx_accounts")||"{}")}
+function k(x){return "nx_"+x+"_"+current}
+function showRegister(){auth.classList.add("hidden");register.classList.remove("hidden")}
+function showLogin(){register.classList.add("hidden");auth.classList.remove("hidden")}
+function register(){let n=newName.value.trim(),p=newPassword.value;if(!n||!p)return alert("Бардык талааны толтур.");let a=accounts();if(a[n])return alert("Бул ат колдонулган.");a[n]=p;localStorage.setItem("nx_accounts",JSON.stringify(a));localStorage.setItem("nx_bonus_"+n,"400");alert("Демо аккаунт түзүлдү. Эми кир.");showLogin()}
+function login(){let n=loginName.value.trim(),p=loginPassword.value;if(accounts()[n]!==p)return alert("Логин же сыр сөз туура эмес.");current=n;localStorage.setItem("nx_user",n);start()}
+function start(){auth.classList.add("hidden");register.classList.add("hidden");app.classList.remove("hidden");logoutBtn.classList.remove("hidden");welcomeName.textContent=current;profileName.textContent=current;refLink.value=location.href.split("?")[0]+"?ref="+encodeURIComponent(current);render();update()}
+function logout(){localStorage.removeItem("nx_user");location.reload()}
+function update(){let b=Number(localStorage.getItem(k("bonus"))??400),m=Number(localStorage.getItem(k("main"))||0);totalBalance.textContent=(b+m).toFixed(2);bonusBalance.textContent=b.toFixed(2)+" сом";mainBalance.textContent=m.toFixed(2)+" сом"}
+function claimDaily(){let day=new Date().toISOString().slice(0,10);if(localStorage.getItem(k("daily"))===day)return dailyStatus.textContent="Бүгүнкү бонус алынган.";localStorage.setItem(k("daily"),day);localStorage.setItem(k("bonus"),Number(localStorage.getItem(k("bonus"))??400)+5);dailyStatus.textContent="5 виртуалдык упай кошулду.";update()}
+function showPage(id){document.querySelectorAll(".section").forEach(x=>x.classList.add("hidden"));document.getElementById(id).classList.remove("hidden")}
+function render(){let target=document.getElementById("houses");target.innerHTML="";homes.forEach(h=>{let el=document.createElement("article");el.className="house";el.innerHTML='<img src="images/'+h[2]+'" alt="Үй"><div class="houseinfo"><span class="pill">МААЛЫМАТТЫК ҮЛГҮ</span><h3></h3><div class="price"></div><p class="muted">Баасынын мисал маалыматы</p><button class="secondary" style="width:100%;margin-top:10px" type="button">Толук маалымат</button></div>';el.querySelector("h3").textContent=h[0];el.querySelector(".price").textContent=h[1].toLocaleString("ru-RU")+" сом";el.querySelector("button").onclick=()=>alert("Бул маалыматтык карточка. Сатып алуу же киреше убадасы жок.");target.appendChild(el)});document.getElementById("featured").innerHTML=target.innerHTML}
+function copyRef(){refLink.select();document.execCommand("copy");alert("Көчүрүлдү")}
+if(current)start();
+</script>
+</body>
+</html>
